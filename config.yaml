@@ -1,0 +1,37 @@
+# Non-secret configuration for the AI University Assistant.
+# Store keys and service endpoints in .env.
+
+application:
+  name: AI University Assistant
+  university: Imperial College London
+
+api:
+  host: 127.0.0.1
+  port: 8000
+  cors_origins:
+    - http://localhost:3000
+
+azure_openai:
+  api_version: 2024-02-15-preview
+  chat_model: gpt-4o
+  embedding_model: text-embedding-3-large
+
+azure_search:
+  index_name: university-index
+  vector_field: embedding
+
+retrieval:
+  chunk_size: 500
+  top_k: 5
+  temperature: 0.3
+
+crawler:
+  sitemap_url: https://www.imperial.ac.uk/sitemap.xml
+  max_pages: 50
+  minimum_content_length: 200
+  allowed_path_keywords:
+    - study
+    - undergraduate
+    - postgraduate
+    - students
+    - research
