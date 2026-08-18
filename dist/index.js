@@ -8,3 +8,4 @@ export default {
 
     return Response.json({ message: "AI University Assistant test agent" });
   },
+};
