@@ -1,39 +1,53 @@
+apiVersion: beanshost.io/v1alpha1
+kind: Agent
+metadata:
+  name: ai-university-assistant
+  displayName: AI University Assistant
+  description: University-assistant test agent
+  labels:
+    product: university-assistant
 
-# Non-secret configuration for the AI University Assistant.
-# Store keys and service endpoints in .env.
+spec:
+  runtime:
+    type: worker
+    entrypoint: dist/index.js
+    compatibility:
+      webStandardApis: true
 
-application:
-  name: AI University Assistant
-  university: Imperial College London
+  source:
+    type: github
+    repository: Abhi03072001/ask-chatbot
+    branch: main
+    manifestPath: beanshost.yaml
 
-api:
-  host: 127.0.0.1
-  port: 8000
-  cors_origins:
-    - http://localhost:3000
+  health:
+    path: /health
+    timeoutSeconds: 5
 
-azure_openai:
-  api_version: 2024-02-15-preview
-  chat_model: gpt-4o
-  embedding_model: text-embedding-3-large
+  scaling:
+    minimumInstances: 0
+    maximumInstances: 5
+    concurrency: 25
 
-azure_search:
-  index_name: university-index
-  vector_field: embedding
+  triggers:
+    - type: http
+      path: /invoke
 
-retrieval:
-  chunk_size: 500
-  top_k: 5
-  temperature: 0.3
+  secrets: []
 
-crawler:
-  sitemap_url: https://www.imperial.ac.uk/sitemap.xml
-  max_pages: 50
-  minimum_content_length: 200
-  allowed_path_keywords:
-    - study
-    - undergraduate
-    - postgraduate
-    - students
-    - research
+  resilience:
+    retry:
+      maximumAttempts: 3
+    timeoutSeconds: 30
+    modelFallback: false
 
+  governance:
+    registrationRequired: true
+    approvalRequiredForProduction: true
+    riskClassification: low
+
+  observability:
+    logs: true
+    traces: true
+    usageMetering: true
+    captureContent: false
